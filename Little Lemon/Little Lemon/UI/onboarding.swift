@@ -28,7 +28,7 @@ struct onboarding: View {
                     print("User inputs can not be empty")
                 }
                 else{
-                    if(email.isValidEmail() == true){
+                    if(email.isValidEmail()){
                         print("Email is valid")
                         UserDefaults.standard.setValue(firstName, forKey: kFirstName)
                         UserDefaults.standard.setValue(lastName, forKey: kLastName)
