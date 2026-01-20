@@ -6,3 +6,20 @@
 //
 
 import Foundation
+
+
+struct MenuItem: Codable, Identifiable{
+    var id = UUID()
+    let title: String
+    let image: String
+    let price: String
+    
+    var priceAsDouble: Double {
+        Double(price) ?? 0.0
+    }
+    enum CodingKeys: String, CodingKey {
+        case title = "title"
+        case price = "price"
+        case image = "image"
+    }
+}
