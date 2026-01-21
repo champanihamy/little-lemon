@@ -12,83 +12,87 @@ let kLastName = "last_name"
 let kEmail = "email"
 
 struct Onboarding: View {
-    @State var firstName = ""
-    @State var lastName = ""
-    @State var email = ""
     @State var username = ""
     @State var password = ""
-    @State var isLoggedIn = false
     @State var isPasswordVisible = false;
+    @State private var path = [String]()
     var body: some View {
-        ZStack {
-            // Background Gradient
-            LinearGradient(gradient: Gradient(colors: [Color(hex: "FDEBD0"), .white]),
-                           startPoint: .top,
-                           endPoint: .center)
-            .ignoresSafeArea()
-            
-            VStack(spacing: 20) {
-                Spacer().frame(height: 80)
+        NavigationStack(path: $path) {
+            ZStack {
                 
-                // Header
-                VStack(spacing: 8) {
-                    Text("Sign In")
-                        .font(.system(size: 32, weight: .bold))
-                    Text("Please provide your details below to\naccess your account")
-                        .font(.subheadline)
-                        .foregroundColor(.gray)
-                        .multilineTextAlignment(.center)
-                }
-                .padding(.bottom, 20)
                 
-                // Input Fields
-                VStack(spacing: 15) {
-                    customTextField(icon: "person", placeholder: "Username", text: $username)
+                
+                // Background Gradient
+                LinearGradient(gradient: Gradient(colors: [Color("brandPrimary"), .white]),
+                               startPoint: .top,
+                               endPoint: .center)
+                .ignoresSafeArea()
+                
+                VStack(spacing: 20) {
+                    Spacer().frame(height: 80)
                     
-                    customPasswordField(icon: "lock", placeholder: "Password", text: $password, isVisible: $isPasswordVisible)
-                }
-                
-                // Terms Toggle
-                HStack {
-                    //                    Toggle("", isOn: $agreeToTerms)
-                    //                        .toggleStyle(CheckboxStyle())
+                    // Header
+                    VStack(spacing: 8) {
+                        Text("Sign In")
+                            .font(.system(size: 32, weight: .bold))
+                        Text("Please provide your details below to\naccess your account")
+                            .font(.subheadline)
+                            .foregroundColor(.gray)
+                            .multilineTextAlignment(.center)
+                    }
+                    .padding(.bottom, 20)
                     
-                    Text("I agree with the ") +
-                    Text("Terms and Conditions").foregroundColor(.orange) +
-                    Text(" and ") +
-                    Text("Privacy Policy").foregroundColor(.orange) +
-                    Text(" of TranspoX")
+                    // Input Fields
+                    VStack(spacing: 15) {
+                        customTextField(icon: "person", placeholder: "Username", text: $username)
+                        
+                        customPasswordField(icon: "lock", placeholder: "Password", text: $password, isVisible: $isPasswordVisible)
+                    }
+                    
+                    
+                    
+                    
+                    // Action Button
+                    Button(action: {
+                        // Sign in logic
+                        if(username.isEmpty || password.isEmpty)
+                        {
+                            return
+                        }
+                        else{
+                            path.append("Home")
+                        }
+                        
+                        
+                    }) {
+                        Text("Sign In")
+                            .font(.headline)
+                            .foregroundColor(.black)
+                            .frame(maxWidth: .infinity)
+                            .frame(height: 55)
+                            .background(Color.orange)
+                            .cornerRadius(12)
+                    }
+                    .padding(.top, 20)
+                    
+                    
+                    // Footer
+                    HStack {
+                        Text("Don't have an account?")
+                        Button("Sign up") {}
+                            .foregroundColor(.orange)
+                    }
+                    .font(.subheadline)
+                    .padding(.top, 10)
+                    
+                    Spacer()
                 }
-                .font(.caption)
-                .foregroundColor(.gray)
-                .padding(.top, 10)
-                
-                // Action Button
-                Button(action: {
-                    // Sign in logic
-                }) {
-                    Text("Sign In")
-                        .font(.headline)
-                        .foregroundColor(.black)
-                        .frame(maxWidth: .infinity)
-                        .frame(height: 55)
-                        .background(Color.orange)
-                        .cornerRadius(12)
+                .padding(.horizontal, 25).navigationDestination(for: String.self) { value in
+                    if value == "Home"{
+                        Home()
+                    }
                 }
-                .padding(.top, 20)
-                
-                // Footer
-                HStack {
-                    Text("Don't have an account?")
-                    Button("Sign up") {}
-                        .foregroundColor(.orange)
-                }
-                .font(.subheadline)
-                .padding(.top, 10)
-                
-                Spacer()
             }
-            .padding(.horizontal, 25)
         }
     }
     
@@ -121,25 +125,27 @@ struct Onboarding: View {
     }
 }
 
-extension String {
-    func isValidEmail() -> Bool {
-        // A commonly used, robust regex pattern for general email validation
-        let emailRegEx = "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,64}"
-        
-        let emailPred = NSPredicate(format:"SELF MATCHES %@", emailRegEx)
-        return emailPred.evaluate(with: self)
-    }
-}
+
+// Email Validation
+//extension String {
+//    func isValidEmail() -> Bool {
+//        // A commonly used, robust regex pattern for general email validation
+//        let emailRegEx = "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,64}"
+//
+//        let emailPred = NSPredicate(format:"SELF MATCHES %@", emailRegEx)
+//        return emailPred.evaluate(with: self)
+//    }
+//}
 
 // Hex Color Extension
-extension Color {
-    init(hex: String) {
-        let scanner = Scanner(string: hex)
-        var rgbValue: UInt64 = 0
-        scanner.scanHexInt64(&rgbValue)
-        let r = Double((rgbValue & 0xFF0000) >> 16) / 255.0
-        let g = Double((rgbValue & 0x00FF00) >> 8) / 255.0
-        let b = Double(rgbValue & 0x0000FF) / 255.0
-        self.init(red: r, green: g, blue: b)
-    }
-}
+//extension Color {
+//    init(hex: String) {
+//        let scanner = Scanner(string: hex)
+//        var rgbValue: UInt64 = 0
+//        scanner.scanHexInt64(&rgbValue)
+//        let r = Double((rgbValue & 0xFF0000) >> 16) / 255.0
+//        let g = Double((rgbValue & 0x00FF00) >> 8) / 255.0
+//        let b = Double(rgbValue & 0x0000FF) / 255.0
+//        self.init(red: r, green: g, blue: b)
+//    }
+//}
